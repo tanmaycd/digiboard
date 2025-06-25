@@ -15,30 +15,39 @@ const NameInput = () => {
 
   const [name, setName] = useState("");
 
-  useEffect(() => {
-    if (!roomId) return;
-    socket.emit("check_room", roomId);
+useEffect(() => {
+  if (!roomId) return;
 
-    socket.on("room_exists", (exists) => {
-      if (!exists) router.push("/");
-    });
+  socket.emit("check_room", roomId);
 
-    return () => socket.off("room_exists");
-  }, [roomId, router]);
+  const handleRoomExists = (exists: boolean) => {
+    if (!exists) router.push("/");
+  };
 
-  useEffect(() => {
-    const handleJoined = (roomIdFromServer: string, failed?: boolean) => {
-      if (failed) {
-        router.push("/");
-        openModal(<NotFoundModal id={roomIdFromServer} />);
-      } else {
-        setRoomIdAtom(roomIdFromServer);
-      }
-    };
+  socket.on("room_exists", handleRoomExists);
 
-    socket.on("joined", handleJoined);
-    return () => socket.off("joined", handleJoined);
-  }, [openModal, router, setRoomIdAtom]);
+  return () => {
+    socket.off("room_exists", handleRoomExists); // ✅ clean up correctly
+  };
+}, [roomId, router]);
+
+ useEffect(() => {
+  const handleJoined = (roomIdFromServer: string, failed?: boolean) => {
+    if (failed) {
+      router.push("/");
+      openModal(<NotFoundModal id={roomIdFromServer} />);
+    } else {
+      setRoomIdAtom(roomIdFromServer);
+    }
+  };
+
+  socket.on("joined", handleJoined);
+
+  return () => {
+    socket.off("joined", handleJoined); // ✅ cleanup with same reference
+  };
+}, [openModal, router, setRoomIdAtom]);
+
 
   const handleJoinRoom = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
