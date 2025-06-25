@@ -55,9 +55,10 @@ const ToolBar = () => {
 
   return (
     <>
+      {/* Toggle for smaller screens */}
       <motion.button
         onClick={() => setOpened(!opened)}
-        className="btn-icon absolute bottom-1/2 -left-2 z-50 h-10 w-10 rounded-full bg-indigo-700 text-white text-2xl lg:hidden"
+        className="fixed bottom-4 left-4 z-40 flex max-w-[95%] flex-wrap items-center justify-start gap-6 rounded-2xl bg-gradient-to-br from-indigo-800 to-purple-700 bg-opacity-90 p-4 text-white shadow-2xl backdrop-blur-md"
         animate={{ rotate: opened ? 0 : 180 }}
         transition={{ duration: 0.2, ease: DEFAULT_EASE }}
         title="Toggle Toolbar"
@@ -66,30 +67,32 @@ const ToolBar = () => {
       </motion.button>
 
       <motion.div
-        className="absolute left-6 top-1/2 z-50 grid grid-cols-2 gap-6 rounded-2xl bg-gradient-to-br from-indigo-800 to-purple-700 bg-opacity-90 p-6 text-white shadow-2xl backdrop-blur-md 2xl:grid-cols-1"
-        animate={{ x: opened ? 0 : -200, y: "-50%" }}
-        transition={{ duration: 0.2, ease: DEFAULT_EASE }}
+        className="fixed bottom-4 left-1/2 z-40 flex max-w-[95%] -translate-x-1/2 flex-wrap items-center justify-center gap-6 rounded-2xl bg-gradient-to-br from-indigo-800 to-purple-700 bg-opacity-90 p-4 text-white shadow-2xl backdrop-blur-md"
+        animate={{ y: opened ? 0 : 120 }}
+        transition={{ duration: 0.25, ease: DEFAULT_EASE }}
       >
-        <GroupLabel label="Tools">
-          <Tool title="Drawing Mode"><ModePicker /></Tool>
-          <Tool title="Shapes"><ShapeSelector /></Tool>
-        </GroupLabel>
-
-        <GroupLabel label="Styles">
-          <Tool title="Colors"><ColorPicker /></Tool>
-          <Tool title="Line Width"><LineWidthPicker /></Tool>
-          <Tool title="Background"><BackgroundPicker /></Tool>
-        </GroupLabel>
-
-        <GroupLabel label="Assets">
-          <Tool title="Add Image"><ImagePicker /></Tool>
-        </GroupLabel>
-
-        <GroupLabel label="History">
-          <Tool title="Undo / Redo"><HistoryBtns /></Tool>
-        </GroupLabel>
-
-        <GroupLabel label="Actions">
+        <ToolGroup title="Mode">
+          <ModePicker />
+        </ToolGroup>
+        <ToolGroup title="Shapes">
+          <ShapeSelector />
+        </ToolGroup>
+        <ToolGroup title="Color">
+          <ColorPicker />
+        </ToolGroup>
+        <ToolGroup title="Line Width">
+          <LineWidthPicker />
+        </ToolGroup>
+        <ToolGroup title="Background">
+          <BackgroundPicker />
+        </ToolGroup>
+        <ToolGroup title="Image">
+          <ImagePicker />
+        </ToolGroup>
+        <ToolGroup title="Undo / Redo">
+          <HistoryBtns />
+        </ToolGroup>
+        <ToolGroup title="Actions">
           <IconButton title="Share Board" onClick={handleShare}>
             <IoIosShareAlt />
           </IconButton>
@@ -99,7 +102,7 @@ const ToolBar = () => {
           <IconButton title="Exit Room" onClick={handleExit}>
             <ImExit />
           </IconButton>
-        </GroupLabel>
+        </ToolGroup>
       </motion.div>
     </>
   );
@@ -109,14 +112,17 @@ export default ToolBar;
 
 /* --- Utility Components --- */
 
-const Tool = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <motion.div
-    title={title}
-    whileHover={{ scale: 1.1 }}
-    className="cursor-pointer transition-transform"
-  >
-    {children}
-  </motion.div>
+const ToolGroup = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex flex-col items-center gap-2">
+    <p className="text-xs font-semibold text-zinc-300">{title}</p>
+    <div className="flex items-center gap-2">{children}</div>
+  </div>
 );
 
 const IconButton = ({
@@ -136,19 +142,4 @@ const IconButton = ({
   >
     {children}
   </motion.button>
-);
-
-const GroupLabel = ({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) => (
-  <div className="flex flex-col gap-3">
-    <p className="text-sm font-semibold uppercase tracking-wider text-zinc-300">
-      {label}
-    </p>
-    <div className="flex flex-wrap items-center gap-3">{children}</div>
-  </div>
 );

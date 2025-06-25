@@ -51,7 +51,7 @@ const Chat = () => {
 
   return (
     <motion.div
-      className="fixed bottom-0 right-6 z-50 flex h-[340px] w-[22rem] flex-col overflow-hidden rounded-t-xl shadow-2xl"
+      className="fixed bottom-0 left-6 z-50 flex h-[340px] w-[22rem] flex-col overflow-hidden rounded-t-xl shadow-2xl"
       animate={{ y: opened ? 0 : 280 }}
       transition={{ ease: DEFAULT_EASE, duration: 0.25 }}
     >
