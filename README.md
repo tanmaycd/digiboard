@@ -1,79 +1,48 @@
-# Task 4 : Real-Time Collaborative Whiteboard
+# 🧩 Real-Time Collaborative Whiteboard
 
-## Overview
-The Whiteboard Project aims to create a digital whiteboard application that allows users to collaborate in real-time, share ideas, and brainstorm effectively.
+## ✍️ Project Description
 
-## Features
-- Real-time collaboration
-- Drawing tools (pen, highlighter, shapes)
-- Text tools (text boxes, fonts)
-- Image upload and manipulation
-- User authentication and roles
-- Saving and loading whiteboard sessions
-- Exporting whiteboards as images or PDFs
-- Integration with other collaboration tools (e.g., Slack, Microsoft Teams)
+A web-based **real-time collaborative whiteboard** application that replicates the feel of a physical whiteboard for remote teams, educators, and creators. It enables multiple users to join a shared session and collaborate visually through drawing, writing, and sharing ideas — all in real-time.
 
-## Technologies
-- Frontend: React, Next.js
-- Backend: Node.js with WebSocket (Socket.IO), Express
-- Database: MongoDB
-- Authentication: JWT, OAuth
-
-
-## Setup Instructions
-
-1. **Clone the repository:**
-    ```bash
-    https://github.com/kashish281/Whiteboard.git
-    cd whiteboard
-    ```
-
-2. **Install dependencies:**
-    ```bash
-    npm install
-    ```
-
-3. **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-
-4. **Build the project:**
-    ```bash
-    npm run build
-    ```
-
-5. **Start the production server:**
-    ```bash
-    npm start
-    ```
-
-## Deployment Instructions
-
-1. **Build the project:**
-    ```bash
-    npm run build
-    ```
-
-2. **Deploy to GitHub Pages:**
-    ```bash
-    npm run deploy
-    ```
-
-## Scripts
-
-- `dev`: Runs the development server with `nodemon` for hot-reloading.
-- `dev:client`: Runs the client-side code with `ts-node`.
-- `build:server`: Compiles the server-side TypeScript code.
-- `build:next`: Builds the Next.js application.
-- `build`: Runs all build-related scripts.
-- `start`: Sets the `NODE_ENV` to production and starts the server.
-- `lint`: Runs the Next.js linter.
-- `predeploy`: Runs the build script before deploying.
-- `deploy`: Deploys the project to GitHub Pages.
-
-
+This whiteboard is lightweight, easy to use, and offers a smooth interactive canvas powered by modern web technologies.
 
 ---
 
+## 🔑 Key Features
+
+- 🎨 **Drawing Tools**: Pen, Shapes (Rectangle & Circle), Eraser, Text Tool, Line Width, and Color Picker  
+- 🧑‍🤝‍🧑 **Multi-User Collaboration**: Share a room URL to collaborate live  
+- ⚡ **Real-Time Updates**: All actions are instantly reflected across connected users using WebSocket (Socket.IO)  
+- 🔒 **Mocked Access Control**: UI support for public/private rooms with "edit" and "view-only" roles (not enforced server-side for simplicity)  
+- 💾 **Save & Export**: Download your whiteboard as a high-quality PNG image  
+- 🕹️ **Canvas Tools**: Undo, Redo, and Clear Canvas controls  
+- 🖼️ **Image Upload**: Add and manipulate uploaded images on the canvas  
+- 🧭 **MiniMap Navigation**: Drag-enabled overview of the full canvas  
+- 🗣️  Chat Sidebar 
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer         | Technologies Used                          |
+|---------------|---------------------------------------------|
+| Frontend      | React.js, Next.js, Tailwind CSS, HTML5 Canvas |
+| State/UI      | Recoil, Framer Motion                       |
+| Backend       | Node.js, Express, Socket.IO                 |                                    |
+| Auth (Mocked) | JWT-ready structure                         |
+| Hosting       | Vercel (Frontend)         |
+
+---
+
+## 🧪 Running Locally (Development Setup)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/whiteboard.git
+cd whiteboard
+npm install 
+npm install --save-dev nodemon
+npm install --save-dev ts-node typescript
+npm run dev
 
