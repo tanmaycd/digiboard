@@ -8,125 +8,101 @@ import NotFoundModal from "../modals/NotFound";
 
 const Home = () => {
   const { openModal } = useModal();
-  const setRoomId = useSetRoomId();
+  const setAtomRoomId = useSetRoomId();
+
+  const [roomId, setRoomId] = useState("");
+  const [username, setUsername] = useState("");
   const router = useRouter();
 
-  const [username, setUsername] = useState("");
-  const [roomId, setRoomIdInput] = useState("");
-  const [roomType, setRoomType] = useState<"public" | "private">("public");
-  const [permission, setPermission] = useState<"edit" | "view">("edit");
-
   useEffect(() => {
-    document.body.style.background =
-      "linear-gradient(to right, #f8fbff, #e0f0fc)";
+    document.body.style.background = "linear-gradient(to right, #e0eafc, #cfdef3)";
   }, []);
 
   useEffect(() => {
-    socket.on("created", (id) => {
-      setRoomId(id);
-      router.push(id);
+    socket.on("created", (roomIdFromServer) => {
+      setAtomRoomId(roomIdFromServer);
+      router.push(roomIdFromServer);
     });
 
-    socket.on("joined", (id: string, failed?: boolean) => {
-      if (failed) {
-        openModal(<NotFoundModal id={roomId} />);
+    const handleJoinedRoom = (roomIdFromServer: string, failed?: boolean) => {
+      if (!failed) {
+        setAtomRoomId(roomIdFromServer);
+        router.push(roomIdFromServer);
       } else {
-        setRoomId(id);
-        router.push(id);
+        openModal(<NotFoundModal id={roomId} />);
       }
-    });
+    };
+
+    socket.on("joined", handleJoinedRoom);
 
     return () => {
       socket.off("created");
-      socket.off("joined");
+      socket.off("joined", handleJoinedRoom);
     };
-  }, [openModal, roomId, router, setRoomId]);
+  }, [openModal, roomId, router, setAtomRoomId]);
 
   useEffect(() => {
     socket.emit("leave_room");
-    setRoomId("");
-  }, [setRoomId]);
+    setAtomRoomId("");
+  }, [setAtomRoomId]);
 
   const handleCreateRoom = () => {
-    // Mocked: send roomType and permission as metadata (no logic tied to it)
-    socket.emit("create_room", { username, roomType, permission });
+    socket.emit("create_room", username);
   };
 
-  const handleJoinRoom = (e: FormEvent) => {
+  const handleJoinRoom = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (roomId) {
-      socket.emit("join_room", roomId, username, { permission });
-    }
+    if (roomId) socket.emit("join_room", roomId, username);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-xl bg-white shadow-xl rounded-2xl p-8">
+      <div className="bg-white shadow-2xl rounded-2xl max-w-xl w-full p-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold text-indigo-600">🎨 Digiboard</h1>
-          <p className="text-gray-600 mt-2">Real-time visual collaboration</p>
+          <h1 className="text-4xl font-extrabold text-blue-600">🎨 Digiboard</h1>
+          <p className="mt-2 text-gray-600 text-lg">Collaborate in real-time on a digital canvas</p>
         </div>
 
         <div className="space-y-6">
           <div>
-            <label className="font-semibold text-gray-700 block mb-1">Your Name</label>
+            <label className="block text-gray-700 font-semibold mb-1">Your Name</label>
             <input
-              className="w-full rounded-md border px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="John Doe"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 outline-none"
+              placeholder="Enter your name"
               value={username}
               onChange={(e) => setUsername(e.target.value.slice(0, 15))}
             />
           </div>
 
           <form onSubmit={handleJoinRoom} className="space-y-4">
-            <label className="font-semibold text-gray-700 block">Room ID</label>
+            <label className="block text-gray-700 font-semibold">Room ID</label>
             <input
-              className="w-full rounded-md border px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="e.g., room-abc-123"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 outline-none"
+              placeholder="Enter room ID"
               value={roomId}
-              onChange={(e) => setRoomIdInput(e.target.value)}
+              onChange={(e) => setRoomId(e.target.value)}
             />
-
-            <label className="block text-sm text-gray-600">Permission</label>
-            <select
-              value={permission}
-              onChange={(e) => setPermission(e.target.value as "edit" | "view")}
-              className="w-full rounded-md border px-3 py-2 text-sm"
-            >
-              <option value="edit">Edit Access</option>
-              <option value="view">View Only</option>
-            </select>
-
             <button
               type="submit"
-              className="w-full bg-indigo-500 text-white font-medium py-2 rounded-md hover:bg-indigo-600 transition"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition"
             >
               Join Room
             </button>
           </form>
 
-          <div className="flex items-center text-gray-400 my-4">
+          <div className="flex items-center gap-4 text-gray-400 my-4">
             <div className="flex-grow h-px bg-gray-300" />
-            <span className="px-2 text-sm">OR</span>
+            <span>OR</span>
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-600">Room Type</label>
-            <select
-              value={roomType}
-              onChange={(e) => setRoomType(e.target.value as "public" | "private")}
-              className="w-full rounded-md border px-3 py-2 text-sm mb-3"
-            >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
-
+          <div className="text-center">
+            <h3 className="text-gray-700 font-semibold mb-2">Create a New Room</h3>
             <button
               onClick={handleCreateRoom}
-              className="w-full bg-green-500 text-white font-medium py-2 rounded-md hover:bg-green-600 transition"
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-md transition"
             >
-              Create New Room
+              Create Room
             </button>
           </div>
         </div>
